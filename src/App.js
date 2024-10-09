@@ -1,14 +1,12 @@
 import './App.css';
 import React from 'react';
-// import Modal from './xmodal';
-// import UserModal from './xmodal';
-import XModal from './Xtable';
+import Modal from './Xtable';
 
 function App() {
  
   return (
     <div className="App">
-      <XModal />
+      <Modal />
     </div>
   );
 }
