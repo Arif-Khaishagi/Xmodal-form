@@ -33,7 +33,7 @@ function Modal() {
         <button onClick={clickHandler}>Open Form</button>
         {isOpen && (
           <div className="modal-content" onClick={closeHandler}>
-            <form onSubmit={submitHandler}>
+            <form onSubmit={submitHandler} onClick={closeHandler}>
               <h2>Fill Details</h2>
               <div className="input-group">
                 <label htmlFor="username">Username: </label>
