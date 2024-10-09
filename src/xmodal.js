@@ -1,108 +1,110 @@
-import React, { useState } from 'react';
+import React from "react";
 
-function UserModal() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [dob, setDob] = useState('');
-
-  const handleOpen = () => {
-    setIsOpen(true);
+const User = ({ closeModal }) => {
+  // Function to validate email
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   };
 
-  const handleSubmit = () => {
-    if (!username || !email || !phone || !dob) {
-      alert('Please fill all the fields');
-      document.classList.add('error-message');
-      return;
-    }
-
-    if (!email.includes('@')) {
-      alert('Invalid email. Please check your email address.');
-      document.getElementById('email').classList.add('error-message');
-      return;
-    }
-
-    if (phone.length !== 10) {
-      alert('Invalid phone number. Please enter a 10-digit phone number.');
-      return;
-    }
-
-    const dobDate = new Date(dob);
-    const currentDate = new Date();
-
-    if (dobDate > currentDate) {
-      alert('Invalid Date of Birth. Please enter a valid date.');
-      return;
-    }
-
-    console.log('Submitted data:', { username, email, phone, dob });
-
-    // Close the modal
-    setIsOpen(false);
+  // Function to validate phone number
+  const validatePhone = (phone) => {
+    return phone.length === 10 && !isNaN(phone);
   };
 
-  const handleClose = () => {
-    setIsOpen(false);
+  // Function to validate date of birth
+  const validateDOB = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    return birthDate < today;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const email = formData.get("email");
+    const phone = formData.get("phone");
+    const dob = formData.get("dob");
+
+    if (!validateEmail(email)) {
+      alert("Invalid email. Please check your email address.");
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      alert("Invalid phone number. Please enter a 10-digit phone number.");
+      return;
+    }
+
+    if (!validateDOB(dob)) {
+      alert("Invalid date of birth. Date of birth cannot be in the future.");
+      return;
+    }
+
+    closeModal(true);
+  };
+
+  const handleOutsideClick = (event) => {
+    if (event.target.className === "modal") {
+      closeModal();
+    }
   };
 
   return (
-    <div className="modal">
-
-      {!isOpen && (
-        <div>
-        <h1>User Details Modal</h1>
-        <button onClick={handleOpen}>Open Form</button>
-        </div>
-      )}
-      {isOpen && (
-        <div className="modal-content">
-          <h2>Fill Details</h2>
-          <div>
+    <div className="modal" onClick={handleOutsideClick}>
+      <div className="modal-content">
+        <h2>Fill Details</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
             <label htmlFor="username">Username:</label>
             <input
               type="text"
               id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              name="username"
+              required
+              className="input-field"
             />
           </div>
-          <div>
+          <div className="form-group">
             <label htmlFor="email">Email Address:</label>
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              required
+              className="input-field"
             />
           </div>
-          <div>
+          <div className="form-group">
             <label htmlFor="phone">Phone Number:</label>
             <input
               type="tel"
               id="phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              name="phone"
+              required
+              className="input-field"
             />
           </div>
-          <div>
+          <div className="form-group">
             <label htmlFor="dob">Date of Birth:</label>
             <input
               type="date"
               id="dob"
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
+              name="dob"
+              required
+              className="input-field"
             />
           </div>
-          <button className="submit-button" onClick={handleSubmit}>
-            Submit
-          </button>
-          <button onClick={handleClose}>Close</button>
-        </div>
-      )}
+          <div className="form-group">
+            <button type="submit" className="submit-button">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
-}
+};
 
-export default UserModal;
+export default User;
